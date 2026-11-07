@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fine-Tuning Without Fear - a beginner's manual by Asdale Dynamics, LLC">
+<title>Chapter 4 — Training on an Ordinary PC · Fine-Tuning Without Fear</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+<ul>
+<li><a href="index.html">Start here</a></li><li><a href="01-what-fine-tuning-actually-is.html">Chapter 1 — What Fine-Tuning Actually Is</a></li><li><a href="02-when-lora-beats-prompting.html">Chapter 2 — When LoRA Beats Prompting</a></li><li><a href="03-dataset-prep-spreadsheet-level.html">Chapter 3 — Spreadsheet-Level Dataset Prep</a></li><li><a class="current" href="04-training-on-an-ordinary-pc.html">Chapter 4 — Training on an Ordinary PC</a></li><li><a href="05-checking-results-honestly.html">Chapter 5 — Checking Results Honestly</a></li><li><a href="06-when-not-to-bother.html">Chapter 6 — When Not to Bother</a></li><li><a href="07-quick-reference-and-glossary.html">Chapter 7 — Quick Reference and Glossary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="chapter-4-training-on-an-ordinary-pc">Chapter 4 — Training on an Ordinary PC</h1>
+<h2 id="shop-for-the-model-first-sizes-that-fit-real-life">Shop for the model first: sizes that fit real life</h2>
+<p>Small quantized model files (4-bit):</p>
+<table><thead>
+<tr><th>Model size</th><th>.GGUF/.MLX 4-bit file</th><th>Rough fit</th></tr>
+</thead><tbody>
+<tr><td>~0.5–1B</td><td>0.4–0.8 GB</td><td>Old laptops</td></tr>
+<tr><td>~1–3B</td><td>0.8–2 GB</td><td>Any modern 8 GB machine</td></tr>
+<tr><td>~3–7B</td><td>2–5 GB</td><td>16 GB machines, most 8 GB VRAM GPUs</td></tr>
+<tr><td>13B+</td><td>8 GB+</td><td>Not this manual's territory</td></tr>
+</tbody></table>
+<p>Well-loved families in this range: <strong>Qwen</strong> (0.5B/1.5B/3B-class), <strong>Llama 3.2</strong> (1B/3B), <strong>Phi-3-mini</strong>, <strong>Gemma 2/3</strong> (2B/4B). All are strong trainers for single-purpose habits; quality differences at this size are smaller than dataset quality differences. That sentence deserves repeating: <strong>your data quality beats their leaderboard position.</strong></p>
+<h2 id="pick-your-tool-by-your-machine">Pick your tool by your machine</h2>
+<table><thead>
+<tr><th>Your machine</th><th>Friendliest tool</th><th>Notes</th></tr>
+</thead><tbody>
+<tr><td>Apple Silicon Mac (M1–M4)</td><td><strong>MLX</strong> (<code>mlx_lm.lora</code>)</td><td>Trains in unified memory; a 3B LoRA trains on a base 16 GB MacBook Air</td></tr>
+<tr><td>Windows/Linux + NVIDIA GPU (6–12 GB VRAM)</td><td><strong>Unsloth</strong> (Python notebooks/scripts)</td><td>4-bit (QLoRA); a 3–4B model trains on 6–8 GB</td></tr>
+<tr><td>Either, and you want a GUI</td><td><strong>LLaMA-Factory</strong></td><td>Web UI wrapping the same math; a touch heavier</td></tr>
+<tr><td>No GPU, no Mac</td><td><strong>Free Colab (cloud)</strong></td><td>The only cloud mention in this manual; nothing to install, free tier trains 1–3B fine</td></tr>
+</tbody></table>
+<p>All three tools take the same JSONL you made in <a href="03-dataset-prep-spreadsheet-level.html">Chapter 3</a> and produce a LoRA sleeve. That is not an accident: LoRA training is roughly <em>the same single GPU afternoon of math</em> everywhere; the tools are just different doors into the same room.</p>
+<h2 id="the-universal-recipe-works-with-all-three-tools">The universal recipe (works with all three tools)</h2>
+<ol>
+<li><strong>Base model.</strong> Download one small model in the chat instruct flavor, 4-bit where offered.</li>
+<li><strong>Point at your JSONL</strong> training and test files.</li>
+<li><strong>Settings that are good starting points</strong> for 1–4B models:</li>
+<ul>
+<li>LoRA rank <code>r = 16</code>, <code>alpha = 32</code> (standard, sane)</li>
+<li>learning rate ≈ <code>2e-4</code> (the classic LoRA default)</li>
+<li>epochs = 2 (more risks parroting; check between epochs)</li>
+<li>batch size as large as memory allows, gradient accumulation to taste</li>
+</ul>
+<li><strong>Run, watch the loss.</strong></li>
+<li><strong>Test on the held-out file.</strong> Not vibes held-out — the file you split in Chapter 3.</li>
+<li><strong>Save the adapter.</strong> Usually some MBs. Copy it somewhere safe with a name that includes the date.</li>
+</ol>
+<h2 id="what-the-loss-curve-is-telling-you">What the loss curve is telling you</h2>
+<ul>
+<li><strong>Falling fast near the start then flattening:</strong> normal; it learned the broad shape.</li>
+<li><strong>Keeps falling low while your test file stops improving:</strong> memorization beginning — stop earlier; fewer epochs.</li>
+<li><strong>Bounces wildly:</strong> learning rate too high, or a few broken rows (see Chapter 3, cleaning passes).</li>
+<li><strong>Barely moves:</strong> dataset too small, or the task teaches nothing a 2-epoch pass can express.</li>
+</ul>
+<p>Do not aim for loss of exactly zero. Zero loss on training data usually means your model parrots your rows back and is useless on anything else — the classic overfitting tell, covered honestly in <a href="05-checking-results-honestly.html">Chapter 5</a>.</p>
+<h2 id="using-what-you-trained">Using what you trained</h2>
+<p>Options, cheapest first:</p>
+<ol>
+<li><strong>llama.cpp / LM Studio / Ollama</strong> — many accept a <code>.gguf</code> model <em>plus</em> a LoRA file, or a merged GGUF. Great for "try it tonight" testing.</li>
+<li><strong>MLX (<code>mlx_lm.generate --model base --adapter my-lora</code>)</strong> for Mac-native runs.</li>
+<li><strong>Merge</strong> (bake sleeve into weights) when you want one standalone file with no adapter plumbing — do it only after testing passes.</li>
+</ol>
+<h2 id="the-weekend-plan-that-actually-finishes">The weekend plan that actually finishes</h2>
+<ul>
+<li><strong>Hour 0–1:</strong> pick model + tool, install.</li>
+<li><strong>Hour 1–3:</strong> JSONL ready and validated (Chapter 3 script does the validation).</li>
+<li><strong>Then:</strong> short smoke run — 30 rows, 1 epoch — <em>before</em> the long one. Ten minutes of smoke test saves some hours of full-data debugging.</li>
+<li><strong>Then:</strong> the real run, 2 epochs, and the honest test in <a href="05-checking-results-honestly.html">Chapter 5</a>.</li>
+<li>Commiserate, retry on any failure with a smaller batch or 1 fewer epoch — most failures at this scale are memory or a data typo, not your intellect.</li>
+</ul>
+<blockquote><p><strong>Set expectations for a first run:</strong> your aim is not "publishable" but "provably better than the same small model without the sleeve, measured on the held-out file." Repeatable progress beats heroic one-shots.</p></blockquote>
+<p>Up next, the part most beginners skip (which is why their models disappoint): <a href="05-checking-results-honestly.html">Chapter 5 — Checking Results Honestly</a>.</p>
+</main>
+<footer>
+<p>Fine-Tuning Without Fear &middot; Copyright (c) 2026 Asdale Dynamics, LLC &middot; <a href="https://dylanasdale.github.io">dylanasdale.github.io</a></p>
+<p>No tracking. No accounts. No fonts fetched from the internet.</p>
+</footer>
+</body>
+</html>

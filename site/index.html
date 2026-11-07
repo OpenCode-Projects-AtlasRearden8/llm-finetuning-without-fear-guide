@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fine-Tuning Without Fear - a beginner's manual by Asdale Dynamics, LLC">
+<title>Fine-Tuning Without Fear · Fine-Tuning Without Fear</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+<ul>
+<li><a class="current" href="index.html">Start here</a></li><li><a href="01-what-fine-tuning-actually-is.html">Chapter 1 — What Fine-Tuning Actually Is</a></li><li><a href="02-when-lora-beats-prompting.html">Chapter 2 — When LoRA Beats Prompting</a></li><li><a href="03-dataset-prep-spreadsheet-level.html">Chapter 3 — Spreadsheet-Level Dataset Prep</a></li><li><a href="04-training-on-an-ordinary-pc.html">Chapter 4 — Training on an Ordinary PC</a></li><li><a href="05-checking-results-honestly.html">Chapter 5 — Checking Results Honestly</a></li><li><a href="06-when-not-to-bother.html">Chapter 6 — When Not to Bother</a></li><li><a href="07-quick-reference-and-glossary.html">Chapter 7 — Quick Reference and Glossary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="finetuning-without-fear">Fine-Tuning Without Fear</h1>
+<p><em>A beginner's manual by Asdale Dynamics, LLC — plain English, step by step, never condescending.</em></p>
+<p>You have heard that you can "train your own AI model." You have maybe seen LoRA adapters, GPU jargon, and spreadsheet debates on the internet, and quietly wondered: <em>is this for me, or is this for people with data centers?</em></p>
+<p>This manual is the friend who sits down with you and says: here is what fine-tuning actually is, when it helps, when it is a waste of your weekend, and how to do a small, honest one on a normal computer. No cloud accounts required unless you want one. No secrets, no tracking, no hype.</p>
+<h2 id="read-it-in-this-order">Read it in this order</h2>
+<ol>
+<li><a href="01-what-fine-tuning-actually-is.html">What fine-tuning actually is</a> — the plain-English explanation, with a perfume-counter analogy.</li>
+<li><a href="02-when-lora-beats-prompting.html">When LoRA beats prompting</a> — the decision chart most people skip.</li>
+<li><a href="03-dataset-prep-spreadsheet-level.html">Spreadsheet-level dataset prep</a> — yes, your dataset starts life as a CSV.</li>
+<li><a href="04-training-on-an-ordinary-pc.html">Training on an ordinary PC</a> — real tools, real RAM numbers, small models.</li>
+<li><a href="05-checking-results-honestly.html">Checking results honestly</a> — how to prove to yourself it worked (or didn't).</li>
+<li><a href="06-when-not-to-bother.html">When not to bother</a> — the chapter some people buy this manual <em>for</em>.</li>
+<li><a href="07-quick-reference-and-glossary.html">Quick reference and glossary</a> — cheat sheet and plain-English jargon decoder.</li>
+</ol>
+<h2 id="the-whole-manual-in-four-sentences">The whole manual in four sentences</h2>
+<p>Fine-tuning adjusts how an existing model <em>behaves</em> — its format, tone, and habits — using examples you curate yourself, usually with a cheap technique called LoRA that trains a small "sleeve" instead of the whole model. It starts as a spreadsheet: prompt in one column, ideal answer in the next, maybe a hundred to a few thousand rows. Small models (1–4 billion parameters) run as 4-bit files that fit on an ordinary machine, and tools like MLX (Mac), Unsloth (Windows/Linux), or LLaMA-Factory (either) can train a LoRA on one over a lunch break. Fine-tuning teaches <em>habits</em>, not <em>facts</em> — if your goal is knowledge lookup, prompt tweaks or retrieval (RAG) usually win, and that discretion is the most valuable skill in this manual.</p>
+<h2 id="how-to-use-the-html-site">How to use the HTML site</h2>
+<p>This repo ships a small static website built from these markdown files — no JavaScript frameworks, no fonts fetched from the internet, no cookies, no accounts. Open <code>site/index.html</code> in any browser after running <code>python3 build.py</code> (the built pages are also committed, so you may not even need to). See the README for details.</p>
+<h2 id="conventions-used-here">Conventions used here</h2>
+<ul>
+<li>Terms in <a href="07-quick-reference-and-glossary.html">the glossary</a> are linked the first time they show up.</li>
+<li>Commands you can type look like <code>this</code>.</li>
+<li>Notes that could save your weekend are in blockquotes.</li>
+<li><em>Honesty rule:</em> every "it worked" in this guide means "verified on examples the model never saw during training." If a chapter breaks that rule, it says so out loud.</li>
+</ul>
+<hr>
+<p><em>This manual is educational and general. It is not affiliated with any model vendor. Built with care by <strong>Asdale Dynamics, LLC</strong>.</em></p>
+</main>
+<footer>
+<p>Fine-Tuning Without Fear &middot; Copyright (c) 2026 Asdale Dynamics, LLC &middot; <a href="https://dylanasdale.github.io">dylanasdale.github.io</a></p>
+<p>No tracking. No accounts. No fonts fetched from the internet.</p>
+</footer>
+</body>
+</html>

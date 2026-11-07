@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fine-Tuning Without Fear - a beginner's manual by Asdale Dynamics, LLC">
+<title>Chapter 2 — When LoRA Beats Prompting · Fine-Tuning Without Fear</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+<ul>
+<li><a href="index.html">Start here</a></li><li><a href="01-what-fine-tuning-actually-is.html">Chapter 1 — What Fine-Tuning Actually Is</a></li><li><a class="current" href="02-when-lora-beats-prompting.html">Chapter 2 — When LoRA Beats Prompting</a></li><li><a href="03-dataset-prep-spreadsheet-level.html">Chapter 3 — Spreadsheet-Level Dataset Prep</a></li><li><a href="04-training-on-an-ordinary-pc.html">Chapter 4 — Training on an Ordinary PC</a></li><li><a href="05-checking-results-honestly.html">Chapter 5 — Checking Results Honestly</a></li><li><a href="06-when-not-to-bother.html">Chapter 6 — When Not to Bother</a></li><li><a href="07-quick-reference-and-glossary.html">Chapter 7 — Quick Reference and Glossary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="chapter-2-when-lora-beats-prompting">Chapter 2 — When LoRA Beats Prompting</h1>
+<h2 id="the-honest-decision-chart">The honest decision chart</h2>
+<p>Before you spend a Saturday on this, answer one question: <strong>what would "success" look like, and could you get it by just writing a better prompt?</strong></p>
+<h3 id="use-prompting-or-retrieval-when">Use prompting or retrieval when...</h3>
+<ul>
+<li><strong>The knowledge is the point.</strong> Your product catalog, policy handbook, or troubleshooting logs. Retrieval (RAG) — the <em>rag-your-docs-handbook</em> territory — beats fine-tuning for factual lookup, because it hands the model a fresh document to read rather than hoping habits hold it.</li>
+<li><strong>The behavior change is a sentence long.</strong> "Answer in two sentences, friendly, end with a question." Write it once, put it in the system prompt, done in a minute.</li>
+<li><strong>You will keep changing your mind.</strong> A prompt is a Post-it note; a fine-tune is a haircut. Iteration is cheaper on paper first.</li>
+<li><strong>You want a model that still does <em>everything</em>.</strong> Every fine-tune narrows specialization somewhat (see <a href="05-checking-results-honestly.html">Chapter 5</a>); a prompt narrows nothing.</li>
+</ul>
+<h3 id="consider-a-lora-when">Consider a LoRA when...</h3>
+<ul>
+<li><strong>You have written the same 200-word style instructions so many times</strong> that they are basically a policy document, and outputs still drift. Fine-tuning bakes the format in so you can stop paying the "prompt tax" every session.</li>
+<li><strong>Examples speak louder than instructions.</strong> You have rows of <em>exactly</em> what good output looks like (support replies, structured forms, your book's voice). Models copy patterns better than they follow prose.</li>
+<li><strong>You need it to run on a small, free, or offline model.</strong> A 1–3B model with a style LoRA can beat a general 7B model-with-long-prompt at a narrow job — and it runs on a laptop with no internet.</li>
+<li><strong>Latency or cost matters.</strong> A short prompt always attached costs tokens on every request. A baked-in habit needs no prefix.</li>
+<li><strong>Your system prompt is long</strong> because you keep rules and few-shot examples in it, repeated every session. Moving those habits into training data can shorten the prompt considerably.</li>
+</ul>
+<h3 id="the-hybrid-truth">The hybrid truth</h3>
+<p>Most real projects end in layers:</p>
+<ol>
+<li><strong>Prompt</strong> for the experiment. Prove the job is possible <em>at all</em> with a large general model before fine-tuning anything.</li>
+<li><strong>Retrieval</strong> for the facts. Fine-tuning never replaces a notebook.</li>
+<li><strong>Fine-tune</strong> for the habit, once you have 100+ squeaky-clean examples and the prompt version is "works, but wobbly."</li>
+</ol>
+<blockquote><p><strong>Rule of thumb: fine-tune the last thing, not the first thing.</strong> If you cannot get the behavior right by prompting a big smart model with careful examples written by hand, fine-tuning your small model will not rescue it either. Sort that out first.</p></blockquote>
+<h2 id="a-worked-decision">A worked decision</h2>
+<p>Say your job: turn nurse-shift handover notes into a tidy SBAR-structured summary for a training simulation (education only, never medical decisions).</p>
+<ul>
+<li>Big model + a written SBAR prompt + three hand-tuned examples: <em>works, 4/5 close enough.</em> → prompt is nearly there; the remaining wobble is format drift.</li>
+<li>You want it to run on a small offline model for privacy. → the habit (SBAR structure) is exactly LoRA territory: many examples of "messy → tidy SBAR" teach structure better than a prompt does.</li>
+<li>The facts inside the note (names, meds, numbers): must come from the input note itself, never from training memory. → keep them in the input; the fine-tune only teaches the <em>shape</em>.</li>
+</ul>
+<p>Conclusion: fine-tune the small model to <em>structure</em>, retrieve/keep-in-context the <em>facts</em>. That is the pattern to remember.</p>
+<h2 id="score-card-count-your-honest-yes-answers">Score card (count your honest "yes" answers)</h2>
+<table><thead>
+<tr><th>Statement</th><th>Yes?</th></tr>
+</thead><tbody>
+<tr><td>I can describe the desired output shape precisely.</td><td></td></tr>
+<tr><td>I have (or can write) at least ~100 good example pairs.</td><td></td></tr>
+<tr><td>A plain prompt on a large model gets "close, but wobbly."</td><td></td></tr>
+<tr><td>I need a small/offline/cheap model to do this habit.</td><td></td></tr>
+<tr><td>The facts I need are in the inputs (or retrievable), not memorization.</td><td></td></tr>
+<tr><td>I am okay testing honestly before trusting it (<a href="05-checking-results-honestly.html">Ch. 5</a>).</td><td></td></tr>
+</tbody></table>
+<p><strong>0–2 yes:</strong> write a better prompt, or read <a href="06-when-not-to-bother.html">Chapter 6</a> and laugh with relief. <strong>3–4:</strong> prototype the prompt seriously; a LoRA may pay off. <strong>5–6:</strong> you are the target audience of <a href="03-dataset-prep-spreadsheet-level.html">Chapter 3</a>. Go get a spreadsheet open.</p>
+<p>Next: <a href="03-dataset-prep-spreadsheet-level.html">Chapter 3 — Spreadsheet-Level Dataset Prep</a>.</p>
+</main>
+<footer>
+<p>Fine-Tuning Without Fear &middot; Copyright (c) 2026 Asdale Dynamics, LLC &middot; <a href="https://dylanasdale.github.io">dylanasdale.github.io</a></p>
+<p>No tracking. No accounts. No fonts fetched from the internet.</p>
+</footer>
+</body>
+</html>

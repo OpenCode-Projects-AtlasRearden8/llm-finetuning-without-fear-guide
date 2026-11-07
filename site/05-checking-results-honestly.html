@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fine-Tuning Without Fear - a beginner's manual by Asdale Dynamics, LLC">
+<title>Chapter 5 — Checking Results Honestly · Fine-Tuning Without Fear</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+<ul>
+<li><a href="index.html">Start here</a></li><li><a href="01-what-fine-tuning-actually-is.html">Chapter 1 — What Fine-Tuning Actually Is</a></li><li><a href="02-when-lora-beats-prompting.html">Chapter 2 — When LoRA Beats Prompting</a></li><li><a href="03-dataset-prep-spreadsheet-level.html">Chapter 3 — Spreadsheet-Level Dataset Prep</a></li><li><a href="04-training-on-an-ordinary-pc.html">Chapter 4 — Training on an Ordinary PC</a></li><li><a class="current" href="05-checking-results-honestly.html">Chapter 5 — Checking Results Honestly</a></li><li><a href="06-when-not-to-bother.html">Chapter 6 — When Not to Bother</a></li><li><a href="07-quick-reference-and-glossary.html">Chapter 7 — Quick Reference and Glossary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="chapter-5-checking-results-honestly">Chapter 5 — Checking Results Honestly</h1>
+<h2 id="the-handsoff-rule">The hands-off rule</h2>
+<p>Everything in this chapter flows from one rule:</p>
+<blockquote><p><strong>Never judge a fine-tune on data it trained on.</strong> If you ask it a question whose answer it memorized, you are grading the photocopier.</p></blockquote>
+<p>Your held-out test file (<a href="03-dataset-prep-spreadsheet-level.html">Chapter 3</a>) exists only for this chapter. If you peeked at test results and then adjusted the model repeatedly, make a <em>fresh</em> holdout from new rows — otherwise tests get stale ("test set leakage by repetition").</p>
+<h2 id="the-comparison-that-means-something">The comparison that means something</h2>
+<p>Run the <em>same</em> held-out prompts through:</p>
+<ul>
+<li><strong>A:</strong> the base model, no adapter</li>
+<li><strong>B:</strong> base model + your LoRA</li>
+<li><strong>C (optional):</strong> base model + your best hand-written prompt</li>
+</ul>
+<p>Score blind if you can: mix A and B answers, shuffle, read without labels. This kills the biggest measurement error of all — <em>wanting it to have worked</em>. You invested evenings; you will see improvement unless you blind yourself on purpose.</p>
+<h2 id="what-to-actually-measure">What to actually measure</h2>
+<p>For a <strong>format habit</strong> (the most common beginner fine-tune):</p>
+<ul>
+<li><strong>Format pass rate:</strong> % of held-out outputs that have the right structure — count them, don't eyeball-gesture. A simple checklist scored 1/0 per row: right sections? right order? no additions?</li>
+<li><strong>Instruction following:</strong> did it do <em>only</em> what was asked?</li>
+<li><strong>Stability:</strong> run each test prompt 2–3 times (chat models are temperature-noisy); "usually right" is a real result, "right once" is not.</li>
+</ul>
+<p>For <strong>style/voice</strong>: side-by-side pairs, blind, your pick rate vs coin-flip 50%.</p>
+<p>Keep a tiny results table — 15 minutes, and weeks later it is the only thing you will trust:</p>
+<table><thead>
+<tr><th>Test set</th><th>Format pass</th><th>Stability</th><th>Notes</th></tr>
+</thead><tbody>
+<tr><td>Base model</td><td>12%</td><td>—</td><td>reads prompt, ignores half</td></tr>
+<tr><td>LoRA v1</td><td>84%</td><td>2/3 runs</td><td>ranting in section 3</td></tr>
+<tr><td>LoRA v2 (1 epoch)</td><td>91%</td><td>3/3</td><td>keep this one</td></tr>
+</tbody></table>
+<h2 id="the-forgetting-check-the-one-everyone-skips">The forgetting check (the one everyone skips)</h2>
+<p>Fine-tunes can <em>steal</em> ability from elsewhere. Ask your fine-tuned model a handful of <strong>off-task questions</strong> — general chit-chat, simple arithmetic, summarizing a paragraph — where the <em>base</em> model was fine. If the LoRA made it suddenly unable to do those things, you trained too hard: fewer epochs, lower learning rate, or raise <code>r</code> a bit. A good single-purpose sleeve mostly leaves the rest alone.</p>
+<h2 id="warning-signs-you-memorized-instead-of-learned">Warning signs you memorized instead of learned</h2>
+<ul>
+<li>Held-out answers <strong>copied a training row verbatim</strong>, including details the input never mentioned.</li>
+<li><strong>Perfect</strong> scores on near-duplicates but nonsense on slight rewordings of the same ask ("turn this into SBAR" works; "give me the SBAR summary" flops).</li>
+<li>Loss on training data near zero while test format pass rates sit low.</li>
+</ul>
+<p>Fix, in order of gentleness: fewer epochs → smaller <code>r</code> → learning rate down → more (and more varied) data.</p>
+<h2 id="honest-failure-statement-template">Honest failure statement template</h2>
+<p>Because this manual stands for honesty, here is language for your own README after v1:</p>
+<blockquote><p><em>Measured on 20 held-out examples: format compliance 91% (base model, 12%). Known regressions: long inputs over ~2,000 characters degrade. Not intended for general chat.</em></p></blockquote>
+<p>One paragraph like that earns you everything a hype-post claiming perfection costs you in credibility.</p>
+<h2 id="the-threenumber-summary">The three-number summary</h2>
+<p>When you finish testing, write down exactly three things: <strong>pass rate on held-out data</strong>, <strong>pass rate of base model on the same data</strong>, and <strong>one honest limitation</strong>. If all three exist, your project is a success regardless of pretty the numbers are — you measured like a scientist instead of hoping like a fan.</p>
+<p>Next: <a href="06-when-not-to-bother.html">Chapter 6 — When Not to Bother</a>.</p>
+</main>
+<footer>
+<p>Fine-Tuning Without Fear &middot; Copyright (c) 2026 Asdale Dynamics, LLC &middot; <a href="https://dylanasdale.github.io">dylanasdale.github.io</a></p>
+<p>No tracking. No accounts. No fonts fetched from the internet.</p>
+</footer>
+</body>
+</html>

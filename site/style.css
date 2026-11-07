@@ -1,0 +1,166 @@
+/* Fine-Tuning Without Fear — static site styles.
+   System fonts only. No web fonts, no tracking, no JavaScript. */
+
+:root {
+  --ink: #23262b;
+  --muted: #6b7280;
+  --paper: #fbfaf7;
+  --card: #ffffff;
+  --line: #e4e1d8;
+  --accent: #2b6a5f;
+  --accent-dark: #1e4f46;
+  --code-bg: #f1efe8;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+/* navigation */
+
+nav {
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  padding: 0.75rem 16px;
+}
+
+nav ul {
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  max-width: 860px;
+}
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.86rem;
+}
+
+nav a:hover { color: var(--accent-dark); }
+
+nav a.current {
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+
+/* content */
+
+main {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 2.2rem 20px 3rem;
+}
+
+h1 {
+  font-size: 1.9rem;
+  line-height: 1.25;
+  margin: 0.2rem 0 1rem;
+  color: var(--accent-dark);
+}
+
+h2 {
+  font-size: 1.3rem;
+  margin: 2.4rem 0 0.6rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+
+h3 {
+  font-size: 1.08rem;
+  margin: 1.8rem 0 0.4rem;
+}
+
+p, li { margin: 0.65rem 0; }
+
+a { color: var(--accent); }
+
+a:hover { color: var(--accent-dark); }
+
+/* code */
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 0.88em;
+  background: var(--code-bg);
+  padding: 0.12em 0.35em;
+  border-radius: 4px;
+}
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+/* tables */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.1rem 0;
+  font-size: 0.93rem;
+}
+
+th, td {
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  padding: 0.45rem 0.65rem;
+  vertical-align: top;
+}
+
+th { background: var(--code-bg); }
+
+/* callouts */
+
+blockquote {
+  margin: 1.2rem 0;
+  padding: 0.7rem 1.1rem;
+  background: #eef4f1;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+}
+
+blockquote p { margin: 0.4rem 0; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 2.2rem 0;
+}
+
+/* footer */
+
+footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.82rem;
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 1.4rem 20px 2.4rem;
+}
+
+footer p { margin: 0.3rem 0; }

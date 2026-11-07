@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fine-Tuning Without Fear - a beginner's manual by Asdale Dynamics, LLC">
+<title>Chapter 1 — What Fine-Tuning Actually Is · Fine-Tuning Without Fear</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+<ul>
+<li><a href="index.html">Start here</a></li><li><a class="current" href="01-what-fine-tuning-actually-is.html">Chapter 1 — What Fine-Tuning Actually Is</a></li><li><a href="02-when-lora-beats-prompting.html">Chapter 2 — When LoRA Beats Prompting</a></li><li><a href="03-dataset-prep-spreadsheet-level.html">Chapter 3 — Spreadsheet-Level Dataset Prep</a></li><li><a href="04-training-on-an-ordinary-pc.html">Chapter 4 — Training on an Ordinary PC</a></li><li><a href="05-checking-results-honestly.html">Chapter 5 — Checking Results Honestly</a></li><li><a href="06-when-not-to-bother.html">Chapter 6 — When Not to Bother</a></li><li><a href="07-quick-reference-and-glossary.html">Chapter 7 — Quick Reference and Glossary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="chapter-1-what-finetuning-actually-is">Chapter 1 — What Fine-Tuning Actually Is</h1>
+<h2 id="start-with-the-perfume-counter">Start with the perfume counter</h2>
+<p>Picture a large language model as a hugely experienced person working behind a perfume counter. They have read almost everything ever written, they can talk about any subject, and they already know <em>hundreds</em> of ways to answer a question. If you ask something, you get a sensible, general answer.</p>
+<p>Now imagine you hand that same person a one-page laminated card: <em>"When a customer asks a question, respond in exactly this style: warm, two sentences, always end with a suggested pairing."</em> They do not need to re-read their library. They just need to <em>tip their default behavior</em> toward your style.</p>
+<p>That is fine-tuning in a nutshell:</p>
+<blockquote><p><strong>Fine-tuning takes an already-smart model and nudges its <em>default habits</em> — format, tone, structure, and style — using a batch of curated examples.</strong></p></blockquote>
+<p>You are not teaching the model facts. It already read the internet. You are showing it <em>which version of itself</em> you want it to be.</p>
+<h2 id="what-changes-and-what-doesnt">What changes (and what doesn't)</h2>
+<table><thead>
+<tr><th>Question</th><th>Fine-tuning</th><th>Prompting</th></tr>
+</thead><tbody>
+<tr><td>Can it change default tone/format?</td><td>Yes, permanently baked in</td><td>Yes, but restated every time</td></tr>
+<tr><td>Can it add brand-new private facts?</td><td>Unreliably — habits aren't memory</td><td>Unreliably</td></tr>
+<tr><td>Does the safety net stay?</td><td>Yes, a LoRA barely touches anything</td><td>Yes</td></tr>
+<tr><td>Do you re-write instructions each session?</td><td>No, they're absorbed</td><td>Yes, every time</td></tr>
+<tr><td>Does it work on top of any chat UI?</td><td>Yes, once merged or loaded as an adapter</td><td>Only where you can paste a prompt</td></tr>
+</tbody></table>
+<p>The fine-tuned model still has the same general knowledge, the same reasoning ability (more or less — see <a href="05-checking-results-honestly.html">Chapter 5</a>), and the same base weights underneath, if you use LoRA. You made a well-read person adopt a style card.</p>
+<h2 id="training-a-model-vs-finetuning-the-same-word-different-prices">"Training a model" vs "fine-tuning": the same word, different prices</h2>
+<p>When someone says "we trained a model," they might mean:</p>
+<ol>
+<li><strong>Pre-training</strong> — building the model from scratch by reading trillions of words. Costs millions of dollars and months on thousands of GPUs. <em>Not this manual, and not your weekend.</em></li>
+<li><strong>Full fine-tuning</strong> — updating <em>all</em> the billions of internal number-sliders ("weights") of an existing model. Requires serious GPU memory, and it is easy to do more harm than good (you can erase abilities the base model had).</li>
+<li><strong>Parameter-efficient fine-tuning (PEFT)</strong> — updating only a tiny added layer. <strong>LoRA</strong> is the friendly, affordable version of this, and it is what this manual uses from here on.</li>
+</ol>
+<h2 id="lora-in-one-paragraph-with-no-math">LoRA, in one paragraph with no math</h2>
+<p>A LoRA ("Low-Rank Adaptation") saves a tiny <em>sleeve</em> — usually kilobytes to hundreds of megabytes — of adjustment values that sit alongside the frozen base model at inference time. Training it means only those sleeve numbers move; the original model is untouched. Because so few numbers move, it:</p>
+<ul>
+<li>Trains on hardware you actually own (even an 8 GB GPU, or a plain Mac).</li>
+<li>Trains fast — minutes to hours, not days.</li>
+<li>Keeps the base model safe; you can throw the sleeve away with no regret.</li>
+<li>Lets you keep several <em>styles</em> (a customer-service sleeve, a poetry sleeve, an FFXIV guild-news sleeve) around one shared base model.</li>
+</ul>
+<p>Add the sleeve to the base model and the combination behaves like your fine-tuned version. Some people "bake it in" (merge) later, but that is optional.</p>
+<h2 id="what-finetuning-is-bad-at-knowing-this-early-saves-you">What fine-tuning is <em>bad</em> at (knowing this early saves you)</h2>
+<p>This deserves its plain English moment now, because half of all fine-tuning disappointment comes from forgetting it:</p>
+<ul>
+<li><strong>Facts.</strong> A LoRA is a set of habits, not an encyclopedia in your pocket. Teaching it your 400 product SKUs and asking for exact recall is like teaching a student your inventory by habit without also giving them a notebook to check.</li>
+<li><strong>Reasoning power.</strong> Fine-tuning will not make a 3B model out-think a frontier 100B+ model at tricky logic. It makes the small model reliable at the <em>shape</em> of work you trained on.</li>
+<li><strong>Cutting corners on data quality.</strong> The model absorbs your examples <em>including their errors</em>. Typos in, typos out.</li>
+</ul>
+<p>For facts, you want retrieval (what the companion <em>rag-your-docs-handbook</em> covers) or a careful pipeline. For habits, fine-tuning shines.</p>
+<h2 id="the-vocabulary-you-will-see-everywhere">The vocabulary you will see everywhere</h2>
+<ul>
+<li><strong>Model / base model / weights:</strong> the big file of learned numbers, e.g. a 4 GB file representing a 4B-parameter model.</li>
+<li><strong>Checkpoint:</strong> a saved moment-in-time copy of the model.</li>
+<li><strong>Dataset:</strong> the curated examples you train on. Yours starts life as a spreadsheet — <a href="03-dataset-prep-spreadsheet-level.html">Chapter 3</a>.</li>
+<li><strong>LoRA / adapter / sleeve:</strong> the tiny trainable layer. See <a href="07-quick-reference-and-glossary.html">the glossary</a> for the rest (Q, r, alpha, etc. when you are ready).</li>
+<li><strong>GPU / VRAM:</strong> the graphics chip and its memory; a 4-bit small model plus training overhead fits in as little as 6–10 GB.</li>
+<li><strong>Epoch:</strong> one full pass over your dataset. Two to three epochs is the common starting point.</li>
+</ul>
+<p>Next: <a href="02-when-lora-beats-prompting.html">Chapter 2 — When LoRA Beats Prompting</a>, which asks the question <em>before</em> any setup: is this even the right tool?</p>
+</main>
+<footer>
+<p>Fine-Tuning Without Fear &middot; Copyright (c) 2026 Asdale Dynamics, LLC &middot; <a href="https://dylanasdale.github.io">dylanasdale.github.io</a></p>
+<p>No tracking. No accounts. No fonts fetched from the internet.</p>
+</footer>
+</body>
+</html>

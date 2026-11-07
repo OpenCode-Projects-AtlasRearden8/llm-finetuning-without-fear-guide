@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fine-Tuning Without Fear - a beginner's manual by Asdale Dynamics, LLC">
+<title>Chapter 7 — Quick Reference and Glossary · Fine-Tuning Without Fear</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+<ul>
+<li><a href="index.html">Start here</a></li><li><a href="01-what-fine-tuning-actually-is.html">Chapter 1 — What Fine-Tuning Actually Is</a></li><li><a href="02-when-lora-beats-prompting.html">Chapter 2 — When LoRA Beats Prompting</a></li><li><a href="03-dataset-prep-spreadsheet-level.html">Chapter 3 — Spreadsheet-Level Dataset Prep</a></li><li><a href="04-training-on-an-ordinary-pc.html">Chapter 4 — Training on an Ordinary PC</a></li><li><a href="05-checking-results-honestly.html">Chapter 5 — Checking Results Honestly</a></li><li><a href="06-when-not-to-bother.html">Chapter 6 — When Not to Bother</a></li><li><a class="current" href="07-quick-reference-and-glossary.html">Chapter 7 — Quick Reference and Glossary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="chapter-7-quick-reference-and-glossary">Chapter 7 — Quick Reference and Glossary</h1>
+<h2 id="the-onepage-recipe">The one-page recipe</h2>
+<ol>
+<li><strong>Decide</strong> (<a href="02-when-lora-beats-prompting.html">Ch. 2</a>): habit, not facts. Prompt-first prototype.</li>
+<li><strong>Dataset</strong> (<a href="03-dataset-prep-spreadsheet-level.html">Ch. 3</a>): 3-column CSV → <code>tools/csv_to_jsonl.py</code> → train/test JSONL (90/10).</li>
+<li><strong>Train</strong> (<a href="04-training-on-an-ordinary-pc.html">Ch. 4</a>): small model (1–4B, 4-bit), LoRA <code>r=16 alpha=32</code>, LR <code>2e-4</code>, 2 epochs, watch loss.</li>
+<li><strong>Verify</strong> (<a href="05-checking-results-honestly.html">Ch. 5</a>): held-out prompts, blind A/B vs base model, format pass rate, forgetting check.</li>
+<li><strong>Decide again</strong> (<a href="06-when-not-to-bother.html">Ch. 6</a>): ship only if the table says it beats the base model; otherwise keep the prompt.</li>
+</ol>
+<p>Commands you will reuse:</p>
+<pre><code class="lang-bash">python3 build.py                 # rebuild the HTML site
+python3 verify.py                # run all checks (links, HTML, CSV→JSONL self-test)
+python3 tools/csv_to_jsonl.py dataset.csv out.jsonl --test out-test.jsonl --test-frac 0.1</code></pre>
+<h2 id="plainenglish-glossary">Plain-English glossary</h2>
+<p><strong>Adapter</strong> — the LoRA sleeve; a small file of habit-adjustments applied over a frozen base model.</p>
+<p><strong>Base model</strong> — the smart general model you start from, untouched under the sleeve.</p>
+<p><strong>Checkpoint</strong> — a saved snapshot; LoRA checkpoints are small, keep dated copies.</p>
+<p><strong>Epoch</strong> — one full pass over the training file. Two is a good default; more risks parroting.</p>
+<p><strong>GGUF</strong> — a compact single-file model format used by llama.cpp-class tools; often 4-bit quantized.</p>
+<p><strong>LoRA / Low-Rank Adaptation</strong> — training a tiny added layer instead of the whole model. Rank (<code>r</code>, capacity ceiling of the sleeve; 16 is a fine default) and alpha (a gain on the sleeve's influence, often 2× rank) are the two knobs from <a href="04-training-on-an-ordinary-pc.html">Chapter 4</a>.</p>
+<p><strong>Merge</strong> — bake the sleeve into the base weights so you ship a single standalone model. Optional; do it after testing.</p>
+<p><strong>Overfit</strong> — the model memorizes your rows instead of learning the underlying habit. Diagnosed in <a href="05-checking-results-honestly.html">Chapter 5</a>.</p>
+<p><strong>PEFT</strong> — parameter-efficient fine-tuning; the family of techniques (LoRA is its star) that makes small upgrades, on ordinary hardware.</p>
+<p><strong>Prompt / system prompt</strong> — instructions given to the model at run time; costs tokens on every call, unlike a fine-tune's baked habit.</p>
+<p><strong>QLoRA</strong> — LoRA applied over a 4-bit quantized base model; the reason a 3B LoRA fits in 8 GB (or less).</p>
+<p><strong>Quantization</strong> — storing the model's numbers more coarsely (4-bit ≈ 8× smaller than 16-bit). Loses a sliver of precision; keeps the brains.</p>
+<p><strong>RAG (retrieval-augmented generation)</strong> — fetching documents at answer time so the model reads facts instead of guessing them. The distinction from this manual is the subject of <em>rag-your-docs-handbook</em>.</p>
+<p><strong>VRAM</strong> — memory on a GPU. Rough guide for 4-bit QLoRA: model GB + 2–4 GB of overhead, on your GPU.</p>
+<p><strong>Weights</strong> — the model's learned numbers. "Full fine-tuning" moves them all; LoRA moves almost none of them.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><em>rag-your-docs-handbook</em> — retrieval when your problem is facts, not habits.</li>
+<li><em>model-settings-decoded-guide</em> — temperature, top-p, and tokens: generation settings, decoded in the same plain voice.</li>
+<li><em>The Massive AI Manual</em> (Dylan Asdale) — the friend explanations that started all this, at dylanasdale.github.io.</li>
+</ul>
+<hr>
+<p><em>Fine-Tuning Without Fear — educational content only. Copyright (c) 2026 Asdale Dynamics, LLC.</em></p>
+</main>
+<footer>
+<p>Fine-Tuning Without Fear &middot; Copyright (c) 2026 Asdale Dynamics, LLC &middot; <a href="https://dylanasdale.github.io">dylanasdale.github.io</a></p>
+<p>No tracking. No accounts. No fonts fetched from the internet.</p>
+</footer>
+</body>
+</html>
