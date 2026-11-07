@@ -1,16 +1,19 @@
-# Python
-__pycache__/
-*.pyc
-
-# OS
-.DS_Store
-Thumbs.db
 
 # Editor
-.idea/
-.vscode/
-
+# OS
+# Python
 # Scratch / datasets not meant to be committed
-*.gguf
-*.safetensors
 *.adapter
+*.gguf
+*.pyc
+*.safetensors
+.DS_Store
+.env
+.env.*
+.idea/
+.venv/
+.vscode/
+Thumbs.db
+__pycache__/
+dist/*.tmp
+node_modules/
